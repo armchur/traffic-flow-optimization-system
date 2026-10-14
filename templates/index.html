@@ -1,0 +1,1616 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Traffic Flow Optimization System | MAU Yola</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ==========================================================
+       CSS VARIABLES: THEME TOKENS (DARK & LIGHT CORPORATE)
+       ========================================================== */
+    :root, [data-theme="dark"] {
+      --bg-base: #070d19;
+      --bg-radial-1: rgba(2, 132, 199, 0.10);
+      --bg-radial-2: rgba(79, 70, 229, 0.08);
+      --bg-radial-3: rgba(15, 23, 42, 0.95);
+
+      --surface-1: #0f172a;
+      --surface-2: #1e293b;
+      --surface-elevated: rgba(15, 23, 42, 0.82);
+      --surface-card-hover: rgba(30, 41, 59, 0.65);
+      --surface-control: rgba(11, 18, 33, 0.7);
+
+      --border-subtle: rgba(148, 163, 184, 0.16);
+      --border-strong: rgba(148, 163, 184, 0.28);
+      --border-focus: #38bdf8;
+
+      --text-main: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-tertiary: #64748b;
+      --text-inverted: #0f172a;
+
+      --corporate-blue: #0284c7;
+      --corporate-blue-hover: #0369a1;
+      --corporate-indigo: #4f46e5;
+      --brand-gradient: linear-gradient(135deg, #0284c7 0%, #2563eb 50%, #4f46e5 100%);
+
+      --success: #10b981;
+      --success-badge-bg: rgba(16, 185, 129, 0.15);
+      --success-badge-border: rgba(16, 185, 129, 0.4);
+      --success-text: #34d399;
+
+      --warning: #f59e0b;
+      --accent-cyan: #38bdf8;
+      --canvas-bg: #030712;
+      --bar-fixed-bg: #475569;
+      --bar-fixed-text: #f1f5f9;
+      --shadow-card: 0 12px 32px -10px rgba(0, 0, 0, 0.55);
+    }
+
+    [data-theme="light"] {
+      --bg-base: #f1f5f9;
+      --bg-radial-1: rgba(2, 132, 199, 0.06);
+      --bg-radial-2: rgba(79, 70, 229, 0.05);
+      --bg-radial-3: rgba(226, 232, 240, 0.8);
+
+      --surface-1: #ffffff;
+      --surface-2: #f8fafc;
+      --surface-elevated: rgba(255, 255, 255, 0.94);
+      --surface-card-hover: #f8fafc;
+      --surface-control: #f8fafc;
+
+      --border-subtle: #cbd5e1;
+      --border-strong: #94a3b8;
+      --border-focus: #0284c7;
+
+      --text-main: #0f172a;
+      --text-secondary: #334155;
+      --text-tertiary: #64748b;
+      --text-inverted: #ffffff;
+
+      --corporate-blue: #0284c7;
+      --corporate-blue-hover: #0369a1;
+      --corporate-indigo: #4338ca;
+      --brand-gradient: linear-gradient(135deg, #0284c7 0%, #2563eb 50%, #4338ca 100%);
+
+      --success: #059669;
+      --success-badge-bg: #d1fae5;
+      --success-badge-border: #6ee7b7;
+      --success-text: #065f46;
+
+      --warning: #d97706;
+      --accent-cyan: #0284c7;
+      --canvas-bg: #090e17;
+      --bar-fixed-bg: #94a3b8;
+      --bar-fixed-text: #0f172a;
+      --shadow-card: 0 8px 24px -6px rgba(15, 23, 42, 0.08);
+    }
+
+    /* ==========================================================
+       RESET & BASE TYPOGRAPHY
+       ========================================================== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-base);
+      background-image:
+        radial-gradient(at 0% 0%, var(--bg-radial-1) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, var(--bg-radial-2) 0px, transparent 50%),
+        radial-gradient(at 50% 100%, var(--bg-radial-3) 0px, transparent 100%);
+      background-attachment: fixed;
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+      line-height: 1.5;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--border-focus);
+      outline-offset: 3px;
+    }
+
+    /* ==========================================================
+       HEADER & NAVIGATION BAR
+       ========================================================== */
+    header {
+      background: var(--surface-elevated);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 14px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .icon-badge {
+      background: var(--brand-gradient);
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+      flex-shrink: 0;
+    }
+
+    h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .title-tag {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: var(--surface-2);
+      border: 1px solid var(--border-strong);
+      color: var(--accent-cyan);
+    }
+
+    .subtitle {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 9999px;
+      font-size: 0.76rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      background: var(--surface-control);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+    }
+
+    .status-pill.active {
+      background: var(--success-badge-bg);
+      border-color: var(--success-badge-border);
+      color: var(--success-text);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 8px var(--success);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.85); }
+    }
+
+    .theme-toggle-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface-control);
+      border: 1px solid var(--border-strong);
+      color: var(--text-main);
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s ease;
+    }
+
+    .theme-toggle-btn:hover {
+      background: var(--surface-2);
+      border-color: var(--border-focus);
+    }
+
+    /* ==========================================================
+       TOOLBAR: SCENARIOS & SPEED CONTROL
+       ========================================================== */
+    .toolbar-bar {
+      background: var(--surface-elevated);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 10px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .toolbar-left, .toolbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .toolbar-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .preset-btn {
+      background: var(--surface-control);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s ease;
+    }
+
+    .preset-btn:hover {
+      color: var(--text-main);
+      border-color: var(--border-strong);
+    }
+
+    .preset-btn.active {
+      background: var(--corporate-blue);
+      border-color: var(--corporate-blue);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
+    }
+
+    .speed-btn-group {
+      display: inline-flex;
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .speed-btn {
+      background: var(--surface-control);
+      border: none;
+      color: var(--text-secondary);
+      padding: 5px 12px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      border-right: 1px solid var(--border-subtle);
+      transition: all 0.15s ease;
+    }
+
+    .speed-btn:last-child {
+      border-right: none;
+    }
+
+    .speed-btn:hover {
+      color: var(--text-main);
+      background: var(--surface-2);
+    }
+
+    .speed-btn.active {
+      background: var(--corporate-indigo);
+      color: #ffffff;
+    }
+
+    .playback-controls {
+      display: flex;
+      gap: 7px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    /* ==========================================================
+       GRID SYSTEM & CARDS
+       ========================================================== */
+    .grid {
+      max-width: 1540px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 22px 28px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+    }
+
+    @media (max-width: 1080px) {
+      .grid {
+        grid-template-columns: 1fr;
+        padding: 16px;
+      }
+    }
+
+    .card {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 22px;
+      box-shadow: var(--shadow-card);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      transition: border-color 0.2s ease;
+    }
+
+    .card:hover {
+      border-color: var(--border-strong);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 12px;
+    }
+
+    .card-title {
+      font-size: 1.02rem;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.01em;
+    }
+
+    .card-subtitle {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+    }
+
+    /* ==========================================================
+       SIMULATION VIEWPORT & TELEMETRY HUD
+       ========================================================== */
+    .sim-viewport {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .canvas-wrapper {
+      width: 100%;
+      max-width: 480px;
+      aspect-ratio: 1 / 1;
+      background: var(--canvas-bg);
+      border: 1px solid var(--border-strong);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .hud-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      width: 100%;
+      max-width: 480px;
+    }
+
+    .hud-card {
+      background: var(--surface-control);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 9px 12px;
+      text-align: center;
+    }
+
+    .hud-title {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      margin-bottom: 3px;
+    }
+
+    .hud-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    /* ==========================================================
+       EVENT LOG
+       ========================================================== */
+    .event-log-container {
+      margin-top: 14px;
+      background: var(--surface-control);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      overflow: hidden;
+      width: 100%;
+      max-width: 480px;
+    }
+
+    .event-log-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      background: var(--surface-2);
+      border-bottom: 1px solid var(--border-subtle);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .clear-log-btn {
+      background: transparent;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      border-radius: 4px;
+      padding: 3px 8px;
+      font-size: 0.72rem;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s ease;
+    }
+
+    .clear-log-btn:hover {
+      color: var(--text-main);
+      border-color: var(--border-strong);
+    }
+
+    .event-log-body {
+      height: 110px;
+      overflow-y: auto;
+      padding: 8px 12px;
+      font: 0.73rem 'JetBrains Mono', monospace;
+      display: flex;
+      flex-direction: column-reverse;
+      gap: 5px;
+      background: rgba(0, 0, 0, 0.18);
+    }
+
+    .log-item {
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    .log-item.info { color: var(--accent-cyan); }
+    .log-item.success { color: var(--success-text); }
+    .log-item.warn { color: var(--warning); }
+
+    @media (max-width: 640px) {
+      .playback-controls { width: 100%; }
+      .event-log-body { height: 90px; }
+    }
+
+    /* ==========================================================
+       APPROACH CONTROLS & SLIDERS
+       ========================================================== */
+    .arm-control {
+      background: var(--surface-control);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .arm-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .arm-name {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .arm-badge {
+      font-size: 0.72rem;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-weight: 600;
+      background: var(--surface-2);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+    }
+
+    .arm-telemetry {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--accent-cyan);
+    }
+
+    .slider-row {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      background: var(--surface-2);
+      border-radius: 3px;
+      border: 1px solid var(--border-subtle);
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--corporate-blue);
+      cursor: pointer;
+      border: 2px solid #ffffff;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+      transition: transform 0.1s ease;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+    }
+
+    /* ==========================================================
+       BUTTONS & ACTIONS
+       ========================================================== */
+    .btn-primary {
+      background: var(--brand-gradient);
+      color: #ffffff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.35);
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.95;
+      transform: translateY(-1px);
+    }
+
+    .btn-benchmark {
+      background: var(--corporate-indigo);
+      color: #ffffff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      box-shadow: 0 2px 8px rgba(79, 70, 229, 0.35);
+      transition: all 0.2s ease;
+    }
+
+    .btn-benchmark:hover {
+      opacity: 0.95;
+      transform: translateY(-1px);
+    }
+
+    /* ==========================================================
+       SPLIT COMPARISON BARS
+       ========================================================== */
+    .split-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .split-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+    }
+
+    .bar-track {
+      background: var(--surface-control);
+      border: 1px solid var(--border-subtle);
+      height: 18px;
+      border-radius: 5px;
+      overflow: hidden;
+      display: flex;
+      position: relative;
+    }
+
+    .bar-fixed {
+      background: var(--bar-fixed-bg);
+      color: var(--bar-fixed-text);
+      font-size: 0.7rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      padding-left: 8px;
+      white-space: nowrap;
+      transition: width 0.3s ease;
+    }
+
+    .bar-dynamic {
+      background: var(--brand-gradient);
+      color: #ffffff;
+      font-size: 0.7rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      padding-left: 8px;
+      white-space: nowrap;
+      transition: width 0.3s ease;
+    }
+
+    /* ==========================================================
+       TABLES (EMPIRICAL BENCHMARK)
+       ========================================================== */
+    .table-container {
+      overflow-x: auto;
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      text-align: left;
+    }
+
+    th {
+      background: var(--surface-control);
+      color: var(--text-secondary);
+      font-weight: 600;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border-subtle);
+      text-transform: uppercase;
+      font-size: 0.72rem;
+      letter-spacing: 0.04em;
+    }
+
+    td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border-subtle);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .badge-gain {
+      background: var(--success-badge-bg);
+      color: var(--success-text);
+      border: 1px solid var(--success-badge-border);
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 0.75rem;
+    }
+
+    /* ==========================================================
+       FOOTER
+       ========================================================== */
+    footer {
+      margin-top: auto;
+      background: var(--surface-elevated);
+      border-top: 1px solid var(--border-subtle);
+      padding: 16px 28px;
+      font-size: 0.78rem;
+      color: var(--text-tertiary);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation & Branding -->
+  <header role="banner">
+    <div class="header-left">
+      <div class="icon-badge" aria-hidden="true">🚦</div>
+      <div>
+        <h1>
+          Traffic Flow Optimization System
+          <span class="title-tag">Final Year Project</span>
+        </h1>
+        <p class="subtitle">Modibbo Adama University, Yola | Dept. of Computer Science (FYP 2026)</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()" aria-label="Toggle between dark and light corporate themes">
+        <span id="themeToggleIcon" aria-hidden="true">☀️</span>
+        <span id="themeToggleText">Light Theme</span>
+      </button>
+      <span class="status-pill active" aria-live="polite">
+        <span class="status-dot" aria-hidden="true"></span> ADAPTIVE CONTROLLER ACTIVE
+      </span>
+      <span class="status-pill">120s MACRO CYCLE</span>
+    </div>
+  </header>
+
+  <!-- Demand Preset & Speed Control Toolbar -->
+  <section class="toolbar-bar" aria-label="Traffic demand presets and simulation playback controls">
+    <div class="toolbar-left" role="group" aria-label="Traffic demand presets">
+      <span class="toolbar-label">Scenarios:</span>
+      <button class="preset-btn active" onclick="applyPreset('morning', this)" aria-pressed="true">🌅 Morning Peak</button>
+      <button class="preset-btn" onclick="applyPreset('evening', this)" aria-pressed="false">🌆 Evening Rush</button>
+      <button class="preset-btn" onclick="applyPreset('balanced', this)" aria-pressed="false">⚖️ Off-Peak Balanced</button>
+    </div>
+    <div class="toolbar-right" role="group" aria-label="Simulation Speed Controls">
+      <span class="toolbar-label">Playback:</span>
+      <div class="speed-btn-group">
+        <button class="speed-btn" onclick="setSpeed(1, this)" aria-pressed="false" aria-label="1x speed">1x</button>
+        <button class="speed-btn active" onclick="setSpeed(2, this)" aria-pressed="true" aria-label="2x speed">2x</button>
+        <button class="speed-btn" onclick="setSpeed(4, this)" aria-pressed="false" aria-label="4x fast speed">4x (Fast)</button>
+      </div>
+      <div class="playback-controls" role="group" aria-label="Simulation playback">
+        <button class="speed-btn" id="pauseBtn" onclick="togglePause()" aria-label="Pause simulation">⏸ Pause</button>
+        <button class="speed-btn" onclick="resetSimulation()" aria-label="Reset simulation">↺ Reset</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Primary Workspace Grid -->
+  <main class="grid">
+    <!-- LEFT: Canvas Telemetry -->
+    <div class="card" aria-labelledby="canvasHeading">
+      <div class="card-header">
+        <h2 class="card-title" id="canvasHeading">Intersection Telemetry Canvas</h2>
+        <span class="card-subtitle">Sangere Campus Quad Junction</span>
+      </div>
+      <div class="sim-viewport">
+        <div class="canvas-wrapper">
+          <canvas id="trafficCanvas" width="480" height="480" role="img" aria-label="Simulated 4-way traffic junction showing real-time animated vehicles, lane markings, and signals"></canvas>
+        </div>
+        <div class="hud-bar" role="region" aria-label="Live Signal Telemetry" aria-live="polite">
+          <div class="hud-card">
+            <div class="hud-title">Active Corridor</div>
+            <div class="hud-value" id="hudPhase" style="color: var(--success-text);">North & South</div>
+          </div>
+          <div class="hud-card">
+            <div class="hud-title">Signal State</div>
+            <div class="hud-value" id="hudSignal" style="color: var(--success-text);">GREEN (35s)</div>
+          </div>
+          <div class="hud-card">
+            <div class="hud-title">Queued Backlog</div>
+            <div class="hud-value" id="hudVehCount" style="color: var(--accent-cyan);">0 in queue</div>
+          </div>
+        </div>
+        <div class="event-log-container" role="region" aria-label="Live junction event log">
+          <div class="event-log-header">
+            <span>Junction Event Log</span>
+            <button class="clear-log-btn" onclick="clearEventLog()" aria-label="Clear event log">Clear</button>
+          </div>
+          <div class="event-log-body" id="eventLog" role="log" aria-live="polite"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Sensor Sliders -->
+    <div class="card" aria-labelledby="sensorsHeading">
+      <div class="card-header">
+        <h2 class="card-title" id="sensorsHeading">Approach Sensor Telemetry</h2>
+        <button class="btn-primary" onclick="runOptimization()" aria-label="Recalculate Timing Allocation">
+          Recalculate Timing
+        </button>
+      </div>
+
+      <!-- North -->
+      <fieldset class="arm-control">
+        <legend class="arm-header" style="width: 100%;">
+          <span class="arm-name">
+            <strong>North Approach</strong>
+            <span class="arm-badge">Sangere Core</span>
+          </span>
+          <span class="arm-telemetry" id="val-N" aria-live="polite">15 veh (20m)</span>
+        </legend>
+        <div class="slider-row">
+          <label for="cnt-N">Arrival Volume (veh):</label>
+          <input type="range" id="cnt-N" min="0" max="100" value="15" oninput="updateUI()" aria-label="North Arrival Volume in vehicles">
+        </div>
+        <div class="slider-row">
+          <label for="q-N">Queue Backlog (m):</label>
+          <input type="range" id="q-N" min="0" max="150" value="20" oninput="updateUI()" aria-label="North Queue Backlog in meters">
+        </div>
+      </fieldset>
+
+      <!-- South -->
+      <fieldset class="arm-control">
+        <legend class="arm-header" style="width: 100%;">
+          <span class="arm-name">
+            <strong>South Approach</strong>
+            <span class="arm-badge">Yola-Mubi Express</span>
+          </span>
+          <span class="arm-telemetry" id="val-S" aria-live="polite">75 veh (85m)</span>
+        </legend>
+        <div class="slider-row">
+          <label for="cnt-S">Arrival Volume (veh):</label>
+          <input type="range" id="cnt-S" min="0" max="100" value="75" oninput="updateUI()" aria-label="South Arrival Volume in vehicles">
+        </div>
+        <div class="slider-row">
+          <label for="q-S">Queue Backlog (m):</label>
+          <input type="range" id="q-S" min="0" max="150" value="85" oninput="updateUI()" aria-label="South Queue Backlog in meters">
+        </div>
+      </fieldset>
+
+      <!-- East -->
+      <fieldset class="arm-control">
+        <legend class="arm-header" style="width: 100%;">
+          <span class="arm-name">
+            <strong>East Approach</strong>
+            <span class="arm-badge">Staff Quarters</span>
+          </span>
+          <span class="arm-telemetry" id="val-E" aria-live="polite">10 veh (10m)</span>
+        </legend>
+        <div class="slider-row">
+          <label for="cnt-E">Arrival Volume (veh):</label>
+          <input type="range" id="cnt-E" min="0" max="100" value="10" oninput="updateUI()" aria-label="East Arrival Volume in vehicles">
+        </div>
+        <div class="slider-row">
+          <label for="q-E">Queue Backlog (m):</label>
+          <input type="range" id="q-E" min="0" max="150" value="10" oninput="updateUI()" aria-label="East Queue Backlog in meters">
+        </div>
+      </fieldset>
+
+      <!-- West -->
+      <fieldset class="arm-control">
+        <legend class="arm-header" style="width: 100%;">
+          <span class="arm-name">
+            <strong>West Approach</strong>
+            <span class="arm-badge">Jimeta Outbound</span>
+          </span>
+          <span class="arm-telemetry" id="val-W" aria-live="polite">50 veh (55m)</span>
+        </legend>
+        <div class="slider-row">
+          <label for="cnt-W">Arrival Volume (veh):</label>
+          <input type="range" id="cnt-W" min="0" max="100" value="50" oninput="updateUI()" aria-label="West Arrival Volume in vehicles">
+        </div>
+        <div class="slider-row">
+          <label for="q-W">Queue Backlog (m):</label>
+          <input type="range" id="q-W" min="0" max="150" value="55" oninput="updateUI()" aria-label="West Queue Backlog in meters">
+        </div>
+      </fieldset>
+    </div>
+  </main>
+
+  <!-- BOTTOM: Allocation & Empirical Benchmark -->
+  <section class="grid">
+    <div class="card" aria-labelledby="splitsHeading">
+      <div class="card-header">
+        <h2 class="card-title" id="splitsHeading">Green Split Comparison (120s Cycle)</h2>
+        <span class="card-subtitle">Equal-Split vs Demand-Weighted</span>
+      </div>
+      <div id="splits-container" role="region" aria-label="Calculated green split allocations"></div>
+    </div>
+
+    <div class="card" aria-labelledby="benchmarkHeading">
+      <div class="card-header">
+        <h2 class="card-title" id="benchmarkHeading">Empirical Benchmark (10-Cycle Simulation)</h2>
+        <button class="btn-benchmark" onclick="runSim()" aria-label="Run Empirical Benchmark Comparison">
+          Run Benchmark
+        </button>
+      </div>
+      <div class="table-container">
+        <table aria-label="Comparative performance between fixed-time and dynamic traffic signal control">
+          <thead>
+            <tr>
+              <th scope="col">Traffic Engineering Metric</th>
+              <th scope="col">Fixed-Time</th>
+              <th scope="col">Dynamic (Adaptive)</th>
+              <th scope="col">Efficiency Gain</th>
+            </tr>
+          </thead>
+          <tbody id="sim-tbody">
+            <tr>
+              <td colspan="4" style="text-align: center; color: var(--text-secondary); font-family: 'Plus Jakarta Sans'; padding: 24px 0;">
+                Click "Run Benchmark" to execute comparative test
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Accessible Footer -->
+  <footer role="contentinfo">
+    <span>Modibbo Adama University, Yola &bull; Department of Computer Science</span>
+    <span>Autonomous Traffic Signal Optimization Framework (FYP 2026)</span>
+  </footer>
+
+  <script>
+    /* ==========================================================
+       THEME MANAGEMENT (DARK / LIGHT CORPORATE TOGGLE)
+       ========================================================== */
+    function initTheme() {
+      const savedTheme = localStorage.getItem('mau_traffic_theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      updateThemeUI(savedTheme);
+    }
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme') || 'dark';
+      const target = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', target);
+      localStorage.setItem('mau_traffic_theme', target);
+      updateThemeUI(target);
+    }
+
+    function updateThemeUI(theme) {
+      const icon = document.getElementById('themeToggleIcon');
+      const text = document.getElementById('themeToggleText');
+      if (theme === 'dark') {
+        icon.innerText = '☀️';
+        text.innerText = 'Light Theme';
+      } else {
+        icon.innerText = '🌙';
+        text.innerText = 'Dark Theme';
+      }
+    }
+
+    /* ==========================================================
+       CONCURRENT CONTROLLER & QUEUING ENGINE (SPEED OPTIMIZED)
+       ========================================================== */
+    const canvas = document.getElementById('trafficCanvas');
+    const ctx = canvas.getContext('2d');
+    const W = 480;
+    const H = 480;
+    const CX = W / 2;
+    const CY = H / 2;
+    const ROAD_W = 110;
+    const LANE_W = ROAD_W / 4;
+    const STOP_DIST = ROAD_W / 2 + 18;
+
+    let timeScale = 2; // Default 2x speed for responsive motion
+    let corridorIdx = 0;
+    let phaseSec = 35;
+    let signalState = 'GREEN';
+    let dynamicSplits = { South: 52, West: 35, North: 11, East: 10 };
+
+    const vehicles = [];
+    const CAR_PALETTE = ['#38bdf8', '#fbbf24', '#f43f5e', '#a855f7', '#34d399', '#f97316', '#e2e8f0'];
+
+    class Vehicle {
+      constructor(origin) {
+        this.origin = origin;
+        this.color = CAR_PALETTE[Math.floor(Math.random() * CAR_PALETTE.length)];
+        this.w = 12;
+        this.l = 22;
+        this.baseMaxSpeed = 3.2 + Math.random() * 0.6;
+        this.speed = this.baseMaxSpeed * timeScale;
+        this.isBraking = false;
+        this.passedStop = false;
+
+        if (origin === 'S') {
+          this.x = CX + LANE_W * 0.6;
+          this.y = H + 25;
+          this.angle = -Math.PI / 2;
+          this.stopCoord = CY + STOP_DIST;
+        } else if (origin === 'N') {
+          this.x = CX - LANE_W * 0.6;
+          this.y = -25;
+          this.angle = Math.PI / 2;
+          this.stopCoord = CY - STOP_DIST;
+        } else if (origin === 'W') {
+          this.x = -25;
+          this.y = CY + LANE_W * 0.6;
+          this.angle = 0;
+          this.stopCoord = CX - STOP_DIST;
+        } else if (origin === 'E') {
+          this.x = W + 25;
+          this.y = CY - LANE_W * 0.6;
+          this.angle = Math.PI;
+          this.stopCoord = CX + STOP_DIST;
+        }
+      }
+
+      getDistToStop() {
+        if (this.origin === 'S') return (this.y - this.l / 2) - this.stopCoord;
+        if (this.origin === 'N') return this.stopCoord - (this.y + this.l / 2);
+        if (this.origin === 'W') return this.stopCoord - (this.x + this.l / 2);
+        return (this.x - this.l / 2) - this.stopCoord;
+      }
+
+      update(leadCar, isGreen) {
+        const currentMaxSpeed = this.baseMaxSpeed * timeScale;
+        let targetSpeed = currentMaxSpeed;
+        this.isBraking = false;
+        const distToStop = this.getDistToStop();
+
+        // 1. Strict Stop-Line Logic
+        if (!this.passedStop) {
+          if (isGreen && distToStop <= 0) {
+            this.passedStop = true;
+          } else if (!isGreen) {
+            if (distToStop <= 0) {
+              targetSpeed = 0;
+              this.isBraking = true;
+              if (this.origin === 'S') this.y = this.stopCoord + this.l / 2;
+              else if (this.origin === 'N') this.y = this.stopCoord - this.l / 2;
+              else if (this.origin === 'W') this.x = this.stopCoord - this.l / 2;
+              else if (this.origin === 'E') this.x = this.stopCoord + this.l / 2;
+            } else if (distToStop < 70) {
+              targetSpeed = Math.min(targetSpeed, Math.max(0, (distToStop / 50) * currentMaxSpeed));
+              this.isBraking = true;
+            }
+          }
+        }
+
+        // 2. Strict Anti-Overlap Queue Logic (8px Visible Buffer)
+        if (leadCar && (!leadCar.passedStop === !this.passedStop)) {
+          let gap = 999;
+          if (this.origin === 'S') gap = (this.y - this.l / 2) - (leadCar.y + leadCar.l / 2);
+          else if (this.origin === 'N') gap = (leadCar.y - leadCar.l / 2) - (this.y + this.l / 2);
+          else if (this.origin === 'W') gap = (leadCar.x - leadCar.l / 2) - (this.x + this.l / 2);
+          else if (this.origin === 'E') gap = (this.x - this.l / 2) - (leadCar.x + leadCar.l / 2);
+
+          const MIN_SAFE_GAP = 8;
+          const SLOWDOWN_GAP = 32;
+
+          if (gap <= MIN_SAFE_GAP) {
+            targetSpeed = 0;
+            this.isBraking = true;
+            if (this.origin === 'S') this.y = leadCar.y + leadCar.l / 2 + this.l / 2 + MIN_SAFE_GAP;
+            else if (this.origin === 'N') this.y = leadCar.y - leadCar.l / 2 - this.l / 2 - MIN_SAFE_GAP;
+            else if (this.origin === 'W') this.x = leadCar.x - leadCar.l / 2 - this.l / 2 - MIN_SAFE_GAP;
+            else if (this.origin === 'E') this.x = leadCar.x + leadCar.l / 2 + this.l / 2 + MIN_SAFE_GAP;
+          } else if (gap < SLOWDOWN_GAP) {
+            const ratio = (gap - MIN_SAFE_GAP) / (SLOWDOWN_GAP - MIN_SAFE_GAP);
+            targetSpeed = Math.min(targetSpeed, Math.max(0, leadCar.speed * ratio));
+            this.isBraking = true;
+          }
+        }
+
+        // Snappy pickup out of green
+        this.speed += (targetSpeed - this.speed) * 0.45;
+        this.x += Math.cos(this.angle) * this.speed;
+        this.y += Math.sin(this.angle) * this.speed;
+      }
+
+      draw() {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.angle);
+
+        ctx.shadowColor = 'rgba(0,0,0,0.45)';
+        ctx.shadowBlur = 6;
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.roundRect(-this.l / 2, -this.w / 2, this.l, this.w, 4);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        // Cabin windshields
+        ctx.fillStyle = '#0f172a';
+        ctx.fillRect(-this.l / 2 + 4, -this.w / 2 + 2, 4, this.w - 4);
+        ctx.fillRect(this.l / 2 - 6, -this.w / 2 + 2, 3, this.w - 4);
+
+        // Headlights (forward direction: +l/2)
+        ctx.fillStyle = '#fef08a';
+        ctx.shadowColor = '#fef08a';
+        ctx.shadowBlur = 4;
+        ctx.fillRect(this.l / 2 - 2, -this.w / 2 + 1, 2, 2);
+        ctx.fillRect(this.l / 2 - 2, this.w / 2 - 3, 2, 2);
+        ctx.shadowBlur = 0;
+
+        // Brake lights (rear direction: -l/2)
+        if (this.isBraking || this.speed < 0.2) {
+          ctx.fillStyle = '#ef4444';
+          ctx.shadowColor = '#ef4444';
+          ctx.shadowBlur = 8;
+          ctx.fillRect(-this.l / 2, -this.w / 2 + 1, 2, 3);
+          ctx.fillRect(-this.l / 2, this.w / 2 - 4, 2, 3);
+          ctx.shadowBlur = 0;
+        }
+
+        ctx.restore();
+      }
+
+      isOut() {
+        return (this.x < -60 || this.x > W + 60 || this.y < -60 || this.y > H + 60);
+      }
+    }
+
+    function spawnVehicles() {
+      const factor = 0.08 * (timeScale / 1.5);
+      const rates = {
+        S: (parseInt(document.getElementById('cnt-S').value) / 100) * factor,
+        N: (parseInt(document.getElementById('cnt-N').value) / 100) * factor,
+        W: (parseInt(document.getElementById('cnt-W').value) / 100) * factor,
+        E: (parseInt(document.getElementById('cnt-E').value) / 100) * factor
+      };
+
+      for (let dir in rates) {
+        if (Math.random() < rates[dir]) {
+          const armCars = vehicles.filter(v => v.origin === dir && !v.passedStop);
+          let safeToSpawn = true;
+          if (armCars.length > 0) {
+            let maxDist = -999;
+            let tail = null;
+            armCars.forEach(c => {
+              const d = c.getDistToStop();
+              if (d > maxDist) { maxDist = d; tail = c; }
+            });
+            if (dir === 'S' && tail && tail.y > H - 35) safeToSpawn = false;
+            if (dir === 'N' && tail && tail.y < 35) safeToSpawn = false;
+            if (dir === 'W' && tail && tail.x < 35) safeToSpawn = false;
+            if (dir === 'E' && tail && tail.x > W - 35) safeToSpawn = false;
+          }
+          if (safeToSpawn) vehicles.push(new Vehicle(dir));
+        }
+      }
+    }
+
+    let timerInterval = null;
+    let isPaused = false;
+    const YELLOW_SECONDS = 3;
+    const ALL_RED_SECONDS = 2;
+
+    function phaseGreenDuration(index = corridorIdx) {
+      const pair = index === 0 ? ['North', 'South'] : ['East', 'West'];
+      return Math.max(12, dynamicSplits[pair[0]] || 12, dynamicSplits[pair[1]] || 12);
+    }
+
+    function updatePhaseHud() {
+      const isNS = corridorIdx === 0;
+      const phase = document.getElementById('hudPhase');
+      const signal = document.getElementById('hudSignal');
+      if (signalState === 'ALL_RED') {
+        phase.innerText = 'Intersection Clearance';
+        phase.style.color = 'var(--warning)';
+        signal.innerText = `ALL-RED (${phaseSec}s)`;
+        signal.style.color = '#ef4444';
+      } else {
+        phase.innerText = isNS ? 'North & South' : 'East & West';
+        phase.style.color = signalState === 'GREEN' ? 'var(--success-text)' : 'var(--warning)';
+        signal.innerText = `${signalState} (${phaseSec}s)`;
+        signal.style.color = signalState === 'GREEN' ? 'var(--success-text)' : 'var(--warning)';
+      }
+      const queuedCount = vehicles.filter(v => !v.passedStop && v.speed < 0.2).length;
+      document.getElementById('hudVehCount').innerText = `${queuedCount} in queue (${vehicles.length} in area)`;
+    }
+
+    function startPhaseTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        if (isPaused) return;
+        phaseSec--;
+        if (phaseSec <= 0) {
+          const corridor = corridorIdx === 0 ? 'NORTH & SOUTH' : 'EAST & WEST';
+          if (signalState === 'GREEN') {
+            signalState = 'YELLOW';
+            phaseSec = YELLOW_SECONDS;
+            logEvent(`${corridor} changed to YELLOW`, 'warn');
+          } else if (signalState === 'YELLOW') {
+            signalState = 'ALL_RED';
+            phaseSec = ALL_RED_SECONDS;
+            logEvent('ALL-RED clearance interval started; both corridors must stop', 'info');
+          } else {
+            corridorIdx = (corridorIdx + 1) % 2;
+            signalState = 'GREEN';
+            phaseSec = phaseGreenDuration(corridorIdx);
+            logEvent(`${corridorIdx === 0 ? 'NORTH & SOUTH' : 'EAST & WEST'} changed to GREEN (${phaseSec}s)`, 'success');
+          }
+        }
+        updatePhaseHud();
+      }, 1000 / timeScale);
+    }
+
+    function togglePause() {
+      isPaused = !isPaused;
+      const btn = document.getElementById('pauseBtn');
+      btn.textContent = isPaused ? '▶ Resume' : '⏸ Pause';
+      btn.setAttribute('aria-label', isPaused ? 'Resume simulation' : 'Pause simulation');
+      logEvent(isPaused ? 'Simulation paused' : 'Simulation resumed', 'info');
+    }
+
+    function resetSimulation() {
+      vehicles.length = 0;
+      corridorIdx = 0;
+      signalState = 'GREEN';
+      phaseSec = phaseGreenDuration(0);
+      isPaused = false;
+      const btn = document.getElementById('pauseBtn');
+      btn.textContent = '⏸ Pause';
+      btn.setAttribute('aria-label', 'Pause simulation');
+      updatePhaseHud();
+      logEvent('Simulation reset; vehicles cleared and North & South set to GREEN', 'warn');
+    }
+
+    function logEvent(message, type = 'info') {
+      const log = document.getElementById('eventLog');
+      if (!log) return;
+      const entry = document.createElement('div');
+      entry.className = `log-item ${type}`;
+      entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+      log.prepend(entry);
+      while (log.children.length > 50) log.removeChild(log.lastChild);
+    }
+
+    function clearEventLog() {
+      const log = document.getElementById('eventLog');
+      if (log) log.replaceChildren();
+    }
+
+    window.addEventListener('keydown', (event) => {
+      if (event.code === 'Space' && !['INPUT', 'TEXTAREA', 'BUTTON'].includes(event.target.tagName)) {
+        event.preventDefault();
+        togglePause();
+      }
+    });
+
+    function setSpeed(scale, btn) {
+      timeScale = scale;
+      document.querySelectorAll('.speed-btn').forEach(button => {
+        if (button.closest('.speed-btn-group') && !button.closest('.playback-controls')) {
+          button.classList.remove('active');
+          button.setAttribute('aria-pressed', 'false');
+        }
+      });
+      btn.classList.add('active');
+      btn.setAttribute('aria-pressed', 'true');
+      logEvent(`Simulation speed set to ${scale}x`, 'info');
+      startPhaseTimer();
+    }
+
+    function drawRoadway() {
+      ctx.clearRect(0, 0, W, H);
+
+      // Grass terrain
+      ctx.fillStyle = '#064e3b';
+      ctx.fillRect(0, 0, W, H);
+
+      // Paved curb shoulders
+      ctx.fillStyle = '#334155';
+      ctx.fillRect(CX - ROAD_W/2 - 8, 0, ROAD_W + 16, H);
+      ctx.fillRect(0, CY - ROAD_W/2 - 8, W, ROAD_W + 16);
+
+      // Asphalt roadway
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(CX - ROAD_W/2, 0, ROAD_W, H);
+      ctx.fillRect(0, CY - ROAD_W/2, W, ROAD_W);
+
+      // Central junction box
+      ctx.fillStyle = '#182234';
+      ctx.fillRect(CX - ROAD_W/2, CY - ROAD_W/2, ROAD_W, ROAD_W);
+
+      // Pedestrian Zebra Crossings
+      ctx.fillStyle = '#e2e8f0';
+      const stripeW = 5, stripeL = 16;
+      for (let x = CX - ROAD_W/2 + 4; x < CX + ROAD_W/2 - 4; x += 10) {
+        ctx.fillRect(x, CY - ROAD_W/2 - stripeL - 2, stripeW, stripeL);
+        ctx.fillRect(x, CY + ROAD_W/2 + 2, stripeW, stripeL);
+      }
+      for (let y = CY - ROAD_W/2 + 4; y < CY + ROAD_W/2 - 4; y += 10) {
+        ctx.fillRect(CX - ROAD_W/2 - stripeL - 2, y, stripeL, stripeW);
+        ctx.fillRect(CX + ROAD_W/2 + 2, y, stripeL, stripeW);
+      }
+
+      // Stop bars
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 4;
+      ctx.beginPath(); ctx.moveTo(CX - ROAD_W/2, CY - STOP_DIST); ctx.lineTo(CX, CY - STOP_DIST); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(CX, CY + STOP_DIST); ctx.lineTo(CX + ROAD_W/2, CY + STOP_DIST); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(CX - STOP_DIST, CY); ctx.lineTo(CX - STOP_DIST, CY + ROAD_W/2); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(CX + STOP_DIST, CY - ROAD_W/2); ctx.lineTo(CX + STOP_DIST, CY); ctx.stroke();
+
+      // Yellow centerline dividers
+      ctx.strokeStyle = '#eab308';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(CX, 0); ctx.lineTo(CX, CY - STOP_DIST - 16);
+      ctx.moveTo(CX, CY + STOP_DIST + 16); ctx.lineTo(CX, H);
+      ctx.moveTo(0, CY); ctx.lineTo(CX - STOP_DIST - 16, CY);
+      ctx.moveTo(CX + STOP_DIST + 16, CY); ctx.lineTo(W, CY);
+      ctx.stroke();
+
+      // Dashed lane bounds
+      ctx.strokeStyle = '#64748b';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([8, 8]);
+      ctx.beginPath();
+      ctx.moveTo(CX + LANE_W, CY + STOP_DIST + 16); ctx.lineTo(CX + LANE_W, H);
+      ctx.moveTo(CX - LANE_W, 0); ctx.lineTo(CX - LANE_W, CY - STOP_DIST - 16);
+      ctx.moveTo(0, CY + LANE_W); ctx.lineTo(CX - STOP_DIST - 16, CY + LANE_W);
+      ctx.moveTo(CX + STOP_DIST + 16, CY - LANE_W); ctx.lineTo(W, CY - LANE_W);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Signal heads
+      const isNS = (corridorIdx === 0);
+      let nsSignal = 'RED';
+      let ewSignal = 'RED';
+      if (signalState !== 'ALL_RED') {
+        nsSignal = isNS ? signalState : 'RED';
+        ewSignal = (!isNS) ? signalState : 'RED';
+      }
+
+      drawTrafficSignal(CX + ROAD_W/2 + 14, CY + STOP_DIST - 4, nsSignal, 'VERTICAL');
+      drawTrafficSignal(CX - ROAD_W/2 - 26, CY - STOP_DIST - 8, nsSignal, 'VERTICAL');
+      drawTrafficSignal(CX - STOP_DIST - 8, CY + ROAD_W/2 + 14, ewSignal, 'HORIZONTAL');
+      drawTrafficSignal(CX + STOP_DIST - 4, CY - ROAD_W/2 - 26, ewSignal, 'HORIZONTAL');
+
+      // Street signs
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '600 10px Plus Jakarta Sans';
+      ctx.fillText('NORTH (Sangere Core)', CX - 55, 14);
+      ctx.fillText('SOUTH (Yola-Mubi Express)', CX - 75, H - 12);
+      ctx.save();
+      ctx.translate(14, CY + 42); ctx.rotate(-Math.PI/2);
+      ctx.fillText('WEST (Jimeta Outbound)', 0, 0);
+      ctx.restore();
+      ctx.save();
+      ctx.translate(W - 8, CY - 40); ctx.rotate(Math.PI/2);
+      ctx.fillText('EAST (Staff Quarters)', 0, 0);
+      ctx.restore();
+    }
+
+    function drawTrafficSignal(x, y, state, orient) {
+      ctx.fillStyle = '#090d16';
+      ctx.strokeStyle = '#334155';
+      ctx.lineWidth = 1;
+      if (orient === 'VERTICAL') {
+        ctx.fillRect(x, y, 12, 32);
+        ctx.strokeRect(x, y, 12, 32);
+        drawBulb(x + 6, y + 6, state === 'RED' ? '#ef4444' : '#450a0a', state === 'RED');
+        drawBulb(x + 6, y + 16, state === 'YELLOW' ? '#eab308' : '#422006', state === 'YELLOW');
+        drawBulb(x + 6, y + 26, state === 'GREEN' ? '#10b981' : '#064e3b', state === 'GREEN');
+      } else {
+        ctx.fillRect(x, y, 32, 12);
+        ctx.strokeRect(x, y, 32, 12);
+        drawBulb(x + 6, y + 6, state === 'RED' ? '#ef4444' : '#450a0a', state === 'RED');
+        drawBulb(x + 16, y + 6, state === 'YELLOW' ? '#eab308' : '#422006', state === 'YELLOW');
+        drawBulb(x + 26, y + 6, state === 'GREEN' ? '#10b981' : '#064e3b', state === 'GREEN');
+      }
+    }
+
+    function drawBulb(bx, by, color, active) {
+      ctx.beginPath();
+      ctx.arc(bx, by, 3.5, 0, Math.PI * 2);
+      ctx.fillStyle = color;
+      if (active) {
+        ctx.shadowColor = color;
+        ctx.shadowBlur = 10;
+      }
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+
+    function renderSimulation() {
+      drawRoadway();
+      if (!isPaused) spawnVehicles();
+
+      const isNS = (corridorIdx === 0);
+
+      ['S', 'N', 'W', 'E'].forEach(dir => {
+        let isGreen = false;
+        if (dir === 'S' || dir === 'N') {
+          isGreen = (isNS && signalState === 'GREEN');
+        } else {
+          isGreen = (!isNS && signalState === 'GREEN');
+        }
+
+        const laneCars = vehicles
+          .filter(v => v.origin === dir)
+          .sort((a, b) => a.getDistToStop() - b.getDistToStop());
+
+        for (let i = 0; i < laneCars.length; i++) {
+          const lead = (i > 0) ? laneCars[i - 1] : null;
+          if (!isPaused) laneCars[i].update(lead, isGreen);
+          laneCars[i].draw();
+        }
+      });
+
+      for (let i = vehicles.length - 1; !isPaused && i >= 0; i--) {
+        if (vehicles[i].isOut()) {
+          vehicles.splice(i, 1);
+        }
+      }
+
+      requestAnimationFrame(renderSimulation);
+    }
+
+    function updateUI() {
+      document.getElementById('val-N').innerText = document.getElementById('cnt-N').value + ' veh (' + document.getElementById('q-N').value + 'm)';
+      document.getElementById('val-S').innerText = document.getElementById('cnt-S').value + ' veh (' + document.getElementById('q-S').value + 'm)';
+      document.getElementById('val-E').innerText = document.getElementById('cnt-E').value + ' veh (' + document.getElementById('q-E').value + 'm)';
+      document.getElementById('val-W').innerText = document.getElementById('cnt-W').value + ' veh (' + document.getElementById('q-W').value + 'm)';
+    }
+
+    function applyPreset(type, btn) {
+      document.querySelectorAll('.preset-btn').forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-pressed', 'false');
+      });
+      btn.classList.add('active');
+      btn.setAttribute('aria-pressed', 'true');
+
+      if (type === 'morning') {
+        document.getElementById('cnt-S').value = 80; document.getElementById('q-S').value = 90;
+        document.getElementById('cnt-N').value = 15; document.getElementById('q-N').value = 20;
+        document.getElementById('cnt-W').value = 45; document.getElementById('q-W').value = 50;
+        document.getElementById('cnt-E').value = 10; document.getElementById('q-E').value = 10;
+      } else if (type === 'evening') {
+        document.getElementById('cnt-S').value = 20; document.getElementById('q-S').value = 25;
+        document.getElementById('cnt-N').value = 75; document.getElementById('q-N').value = 80;
+        document.getElementById('cnt-W').value = 60; document.getElementById('q-W').value = 65;
+        document.getElementById('cnt-E').value = 25; document.getElementById('q-E').value = 30;
+      } else if (type === 'balanced') {
+        document.getElementById('cnt-S').value = 35; document.getElementById('q-S').value = 35;
+        document.getElementById('cnt-N').value = 30; document.getElementById('q-N').value = 30;
+        document.getElementById('cnt-W').value = 35; document.getElementById('q-W').value = 35;
+        document.getElementById('cnt-E').value = 25; document.getElementById('q-E').value = 25;
+      }
+
+      updateUI();
+      logEvent(`Demand preset selected: ${type}`, 'info');
+      runOptimization();
+    }
+
+    async function runOptimization() {
+      const payload = {
+        traffic: {
+          North: { count: parseInt(document.getElementById('cnt-N').value), queue: parseInt(document.getElementById('q-N').value) },
+          South: { count: parseInt(document.getElementById('cnt-S').value), queue: parseInt(document.getElementById('q-S').value) },
+          East:  { count: parseInt(document.getElementById('cnt-E').value), queue: parseInt(document.getElementById('q-E').value) },
+          West:  { count: parseInt(document.getElementById('cnt-W').value), queue: parseInt(document.getElementById('q-W').value) }
+        },
+        cycle_time: 120
+      };
+
+      try {
+        const res = await fetch('/api/optimize', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        dynamicSplits = data.dynamic_splits;
+        const f = data.fixed_splits;
+
+        const arms = ['North', 'South', 'East', 'West'];
+        let html = '';
+        arms.forEach(arm => {
+          html += `
+            <div class="split-row">
+              <div class="split-label">
+                <span><strong>${arm} Approach</strong></span>
+                <span style="font-family: 'JetBrains Mono'; font-size: 0.76rem;">
+                  Fixed: ${f[arm]}s | Dynamic: <strong style="color: var(--success-text);">${dynamicSplits[arm]}s</strong>
+                </span>
+              </div>
+              <div class="bar-track" aria-label="${arm} Fixed Split ${f[arm]}s">
+                <div class="bar-fixed" style="width: ${(f[arm]/120)*100}%">Fixed (${f[arm]}s)</div>
+              </div>
+              <div class="bar-track" style="margin-top: 5px;" aria-label="${arm} Dynamic Split ${dynamicSplits[arm]}s">
+                <div class="bar-dynamic" style="width: ${(dynamicSplits[arm]/120)*100}%">Dynamic (${dynamicSplits[arm]}s)</div>
+              </div>
+            </div>
+          `;
+        });
+        document.getElementById('splits-container').innerHTML = html;
+        logEvent('Adaptive signal timings recalculated from the current approach demand.', 'success');
+      } catch (err) {
+        console.error('Optimization fetch failed:', err);
+        logEvent('Optimization could not reach the Flask API. Check that the server is running.', 'warn');
+      }
+    }
+
+    async function runSim() {
+      const tbody = document.getElementById('sim-tbody');
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-secondary); font-family: \'Plus Jakarta Sans\'; padding: 20px;">Running 10-cycle microscopic benchmark...</td></tr>';
+
+      try {
+        const res = await fetch('/api/simulate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ scenario: 'MAU Yola Peak Scenario', cycles: 10 })
+        });
+        const r = await res.json();
+        const f = r.fixed;
+        const d = r.dynamic;
+        const imp = r.improvements;
+
+        tbody.innerHTML = `
+          <tr>
+            <th scope="row">Average Vehicle Delay</th>
+            <td>${f.avg_delay_sec} s</td>
+            <td style="color: var(--accent-cyan); font-weight: 800;">${d.avg_delay_sec} s</td>
+            <td><span class="badge-gain">-${imp.delay_reduction_pct}%</span></td>
+          </tr>
+          <tr>
+            <th scope="row">Average Queue Length</th>
+            <td>${f.avg_queue_vehicles} veh</td>
+            <td style="color: var(--accent-cyan); font-weight: 800;">${d.avg_queue_vehicles} veh</td>
+            <td><span class="badge-gain">-${imp.queue_reduction_pct}%</span></td>
+          </tr>
+          <tr>
+            <th scope="row">Junction Throughput</th>
+            <td>${f.throughput_vph} vph</td>
+            <td style="color: var(--accent-cyan); font-weight: 800;">${d.throughput_vph} vph</td>
+            <td><span class="badge-gain">+${imp.throughput_gain_pct}%</span></td>
+          </tr>
+        `;
+        logEvent('Backend benchmark completed successfully.', 'success');
+      } catch (err) {
+        logEvent('Benchmark could not reach the Flask simulation API.', 'warn');
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--warning); padding: 16px;">Simulation failed to connect to /api/simulate</td></tr>';
+      }
+    }
+
+    window.onload = () => {
+      initTheme();
+      updateUI();
+      updatePhaseHud();
+      runOptimization();
+      startPhaseTimer();
+      renderSimulation();
+      logEvent('Adaptive Controller Active (120s Macro Cycle): Straight-through flow.', 'success');
+    };
+  </script>
+</body>
+</html>

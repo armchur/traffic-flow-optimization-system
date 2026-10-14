@@ -1,0 +1,6 @@
+Whenever you want to run or test your project going forward:
+
+Run unit tests: mvn test
+Build the JAR package: mvn clean package
+Run the main class from terminal: mvn compile exec:java -Dexec.mainClass="com.example.App"
+Run inside VS Code: With the window reloaded and extensions active, opening App.java gives you the inline Run | Debug buttons above main (or just hit F5).
